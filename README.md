@@ -1,40 +1,63 @@
-### Summary of the Project: "Prepayment Risk"
+# Prepayment Risk in Mortgage-Backed Securities
 
-**Authors:** Y. Fan, T. Fan, X. Liu & J. Gruber  
-**Institution:** Baruch College MFE  
-**Date:** August 26, 2024
+This project investigates  **prepayment risk in MBS (Mortgage-Backed Securities)** , with a focus on modeling borrower behavior under varying economic and loan-level conditions. The work was conducted as part of the Baruch MFE program.
 
-This project, titled "Prepayment Risk," focuses on analyzing and predicting the risk of prepayment in mortgage loans using various data analysis and machine learning techniques. The project is divided into two main tasks, each tackling different aspects of prepayment prediction.
+## 📊 Overview
 
-### Key Sections and Findings:
+Mortgage prepayments are critical for understanding the risk and pricing of mortgage-backed securities. Our project explores two related prediction tasks:
 
-1. **Exploratory Data Analysis (EDA):**
-   - The EDA aimed to understand the patterns of prepayment over time, identifying that most prepayments occur after 7 years. This insight was used to define a cutoff period for data analysis.
-   - The relationship between interest rate changes and prepayment rates was also explored, showing a correlation between lower interest rates and higher prepayment rates.
+1. **Task 1 – Static prediction (4-year horizon)**
 
-2. **Problem Definition:**
-   - **Problem 1:** Given a loan profile at the origination, predict whether there will ever be a prepayment. This approach requires a smaller dataset and focuses on understanding long-term prepayment risk using survival analysis.
-   - **Problem 2:** Given a loan at a specific time, predict the probability of prepayment in the next period. This problem is more dynamic and potentially more applicable in industry settings, focusing on short-term prediction.
+   *Will a loan prepay within four years of origination?*
+2. **Task 2 – Dynamic prediction (month-to-month)**
 
-3. **Data Processing:**
-   - **Handling Missing Data:** Missing critical variables (like FICO score, CLTV, LTV) led to the exclusion of certain samples, while other missing data points were handled using median/mode imputations and indicator variables.
-   - **Feature Engineering:** Categorical variables were converted into dummy variables for certain models, and macroeconomic features like mortgage rates and unemployment rates were added to enhance prediction accuracy.
+   *Given a loan at time tt**t**, what is the probability it prepays at t+1t+1**t**+**1**?*
 
-4. **Modeling Approach for Problem 1:**
-   - **Machine Learning Models:** The team used Boosting Trees (LightGBM) and Neural Networks. LightGBM was chosen for its robustness to missing values and categorical features, while Neural Networks were selected for their ability to handle non-linearity and interaction effects.
-   - **Results:** Both models showed good predictive capabilities, with notable metrics like accuracy, ROC curves, and precision-recall, though some overfitting was observed.
+We combine **loan-level features** with **macro and regional variables** (interest rates, unemployment, HPI) and benchmark machine learning approaches.
 
-5. **Problem 2 - Data Preparation and Technical Considerations:**
-   - The team encountered challenges with data handling and model training due to memory constraints. They compared tools like Polars vs. Pandas for data processing and evaluated storage formats (Parquet, CSV, TXT), finding Parquet most suitable for large datasets.
-   - **Challenges:** The project faced unresolved memory errors when processing large datasets, leading to incomplete analysis in Task 2. Proposed solutions included using more powerful computing resources or integrating a database system for better data management.
+## 🔍 Data
 
-6. **Conclusion:**
-   - The project successfully demonstrated the ability to predict mortgage prepayment risk using machine learning models, especially over a four-year period. However, technical challenges in data handling and model training suggest that future work could benefit from enhanced computational resources or a more optimized data infrastructure.
+* **Loan classification** : Standard (CRT-eligible) vs Non-Standard loans
+* **Origination features** : LTV, CLTV, DTI, FICO, property type, insurance, geography
+* **Performance data** : Monthly loan balance, delinquency, termination events (prepayment, foreclosure, REO)
+* **Macro/regional data** : Mortgage rates, unemployment, HPI at zip and state level
 
-### Technical Tools Used:
-- **Programming and Libraries:** Python, using Pandas and Polars for data processing, and LightGBM for machine learning.
-- **Data Storage:** The team experimented with Parquet, CSV, and TXT formats, ultimately favoring Parquet for its efficiency with large datasets.
-- **Machine Learning:** LightGBM was the primary model for tree-based predictions, while a custom Neural Network architecture was used for deep learning tasks.
+## ⚙️ Methodology
 
-### Summary of the Project:
-The project provides a comprehensive approach to understanding and predicting prepayment risk in mortgage loans, leveraging both exploratory data analysis and advanced machine learning models. Despite some technical challenges, the results highlight significant predictive capabilities, with potential applications in the finance industry. The use of cutting-edge tools like LightGBM and Neural Networks, combined with a thoughtful approach to data processing, underscores the project's practical relevance and innovation.
+* **EDA** : Prepayment timing analysis (most occur ~7 years after origination). Cutoff used for modeling train/test splits.
+* **Modeling approaches** :
+* **LightGBM** for tabular learning with categorical variables & missing data
+* **Neural Networks** (deep architecture inspired by  *Deep Learning for Mortgage Risk* )
+* **Evaluation metrics** : Accuracy, ROC, Precision-Recall, Feature importance, Training dynamics
+
+## 📈 Results
+
+* Both LightGBM and Neural Networks achieve  **strong predictive performance** , though some overfitting is visible.
+* Feature importance highlights borrower characteristics (FICO, LTV/CLTV) and macro drivers (interest rates, HPI).
+* Task 2 faced computational bottlenecks — future improvements could leverage **cloud compute** or a  **database backend** .
+
+## 🖼️ Key Figures
+
+You can find the main visuals in the [`figures/`]() folder. Recommended plots for the README:
+
+* [Prepayment timing distribution]() (Slide 4)
+* [Prepayment vs interest rates]() (Slide 6)
+* [Flow chart of methodology]() (Slide 15)
+* [LightGBM &amp; NN accuracy]() (Slide 17)
+* [ROC curves]() (Slide 18)
+* [Precision-Recall]() (Slide 19)
+* [Feature importance &amp; NN loss]() (Slide 20)
+
+*(Export these directly from the slides: [presentation PDF]())*
+
+## 🛠️ Technical Notes
+
+* **Polars vs Pandas** : Polars shows significant speedups for large MBS datasets.
+* **Data storage** : Parquet format outperforms CSV/TXT in speed and compression.
+* **Scalability challenges** : Memory issues prevented full Task 2 implementation — future work includes migrating to cloud-based or database-backed pipelines.
+
+## 🚀 Next Steps
+
+* Optimize dynamic prepayment modeling (Task 2) using distributed compute
+* Explore **survival analysis with exogenous covariates**
+* Implement **production-ready pipelines** for prepayment risk modeling
